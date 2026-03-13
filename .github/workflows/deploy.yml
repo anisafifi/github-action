@@ -57,7 +57,7 @@ jobs:
           source: docker-compose.yml
           target: ${{ env.DEPLOY_PATH }}
 
-      - name: Deploy with Docker Compose over SSH
+      - name: Create .env file and Deploy with Docker Compose over SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -70,13 +70,15 @@ jobs:
             set -e
             cd "$DEPLOY_PATH"
 
-            # Export environment variables for Docker Compose
-            export IMAGE_NAME="$IMAGE_NAME"
-            export CONTAINER_NAME="$CONTAINER_NAME"
-            export HOST_PORT="$HOST_PORT"
-            export CONTAINER_PORT="$CONTAINER_PORT"
-            export GHCR_USERNAME="$GHCR_USERNAME"
-            export GHCR_TOKEN="$GHCR_TOKEN"
+            # Create .env file for Docker Compose
+            cat > .env <<EOF
+              IMAGE_NAME=$IMAGE_NAME
+              CONTAINER_NAME=$CONTAINER_NAME
+              HOST_PORT=$HOST_PORT
+              CONTAINER_PORT=$CONTAINER_PORT
+              GHCR_USERNAME=$GHCR_USERNAME
+              GHCR_TOKEN=$GHCR_TOKEN
+              EOF
 
             # Login to GitHub Container Registry
             sudo docker login ghcr.io -u "$GHCR_USERNAME" -p "$GHCR_TOKEN"
