@@ -22,7 +22,7 @@ jobs:
     env:
       IMAGE_NAME: ghcr.io/${{ github.repository }}:latest
       CONTAINER_NAME: github-action-app
-      HOST_PORT: 3000
+      HOST_PORT: 3300
       CONTAINER_PORT: 3000
       GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
       GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
@@ -70,6 +70,17 @@ jobs:
             set -e
             cd "$DEPLOY_PATH"
 
+            # Export environment variables for Docker Compose
+            export IMAGE_NAME="$IMAGE_NAME"
+            export CONTAINER_NAME="$CONTAINER_NAME"
+            export HOST_PORT="$HOST_PORT"
+            export CONTAINER_PORT="$CONTAINER_PORT"
+            export GHCR_USERNAME="$GHCR_USERNAME"
+            export GHCR_TOKEN="$GHCR_TOKEN"
+
+            # Login to GitHub Container Registry
             sudo docker login ghcr.io -u "$GHCR_USERNAME" -p "$GHCR_TOKEN"
+
+            # Pull and deploy
             sudo docker compose -f docker-compose.yml pull
-            sudo docker compose -f docker-compose.yml up -d --remove-orphans 
+            sudo docker compose -f docker-compose.yml up -d --remove-orphans
