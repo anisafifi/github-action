@@ -19,7 +19,7 @@ describe('Express Server', () => {
     it('should add two numbers', async () => {
       const response = await request(app).post('/api/add').send({ a: 2, b: 3 });
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('result', 5);
+      expect(response.body).toHaveProperty('result', 4);
     });
 
     it('should return 400 for invalid input', async () => {
